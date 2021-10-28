@@ -1,0 +1,1 @@
+This is a CLI tool for automatically creating the required files for Chrome extensions.
