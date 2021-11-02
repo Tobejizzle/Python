@@ -1,5 +1,6 @@
 # AUTO-CHROME-EXTENSION
 # WRITTEN BY TOBY G IN 2021
+
 import os
 import time
 
@@ -31,6 +32,7 @@ def data_collect():
 	background_scripts = input('BACKGROUND SCRIPTS (.js) > ')
 	matches = input('MATCHES (empty for all urls) >')
 	content_scripts = input('CONTENT SCRIPTS (.js) >')
+	popup_ask = input('POPUP HTML FILE (y/n) > ')
 	print('\n' + bcolors.ENDC)
 
 	try:
@@ -65,7 +67,10 @@ def data_collect():
 				manifest.write('			"matches": ["http://*/*", "https://*/*"],\n')
 			manifest.write('			"js": ["' + content_scripts + '.js"] \n')
 			manifest.write('		} \n')
-			manifest.write('	] \n')
+			manifest.write('	], \n')
+			manifest.write('	"browser_action": {\n')
+			manifest.write('		"default_popup": "./popup/popup.html"\n')	
+			manifest.write('	}\n')
 			manifest.write('}')
 
 			print(bcolors.OKCYAN + 'MANIFEST FILE CREATED...')
@@ -81,6 +86,39 @@ def data_collect():
 	except:
 		print(bcolors.FAIL + 'BACKGROUND SCRIPT FAILED TO CREATE.')
 
+	if popup_ask == 'y':
+		try:
+			createFolder('./extension/popup/')
+			print(bcolors.OKCYAN + 'POPUP FOLDER CREATED...' + bcolors.ENDC)
+		except:
+			print(bcolors.FAIL + 'POPUP FOLDER FAILED TO CREATE.' + bcolors.ENDC)
+
+		try: 
+			with open('./extension/popup/popup.html', 'w') as popup:
+				popup.write('<!DOCTYPE html>\n')
+				popup.write('<html>\n')
+				popup.write('	<head>\n')
+				popup.write('		<link rel="stylesheet" href="popup.css"></link>\n')
+				popup.write('	</head>\n')
+				popup.write('	<body>\n')
+				popup.write('		<h1>Hello World! From ' + author + '</h1>\n')
+				popup.write('	</body>\n')
+				popup.write('</html>\n')
+
+			with open('./extension/popup/popup.css', 'w') as popupc:
+				popupc.write('body {\n')
+				popupc.write('	width: max-content;')
+				popupc.write('	height: max-content;')
+				popupc.write('')
+				popupc.write('	background-color: #1c1c1c;\n')
+				popupc.write('	color: white;\n')
+				popupc.write('}\n')
+
+				print(bcolors.OKCYAN + 'POPUP FILES CREATED...' + bcolors.ENDC)
+		except:
+			print(bcolors.FAIL + 'POPUP HTML FAILED TO CREATE.' + bcolors.ENDC)	
+
+
 	try: 	
 		with open('./extension/' + content_scripts + '.js', 'w') as content:
 			content.write('console.log("Hello world!")')
@@ -94,6 +132,7 @@ os.system('clear')
 print('--THIS SCRIPT WILL HELP YOU CREATE A FOLDER FOR YOUR CHROME EXTENSION-- \n')
 x = input(bcolors.OKGREEN + 'CONTINUE? y/n > ' + bcolors.ENDC)
 print('')
+
 if (x == "y"):
 	os.system('clear')
 	data_collect()
